@@ -26,7 +26,6 @@ vetor_theta_hr = []
 vetor_theta_fr = []
 
 for t in vetor_tempo:
-    psi_l = t%T
     w_l = np.array([[x_l],[y_l],[z_l],[psi_l]])
 
     w_l_t2h = w_l - np.array([[x_l_t2h],[y_l_t2h],[z_l_t2h], [0]])
