@@ -9,51 +9,54 @@ intervalo = 0.01   # intervalo de tempo em segundos (10^-2 segundos)
 # Crie o vetor de tempo usando numpy
 vetor_tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)
 
-#print(vetor_tempo)
-
-p = []
-Vx = 1
-Vy = 0
-Vphi = 0
-h = 0.5
-g = 9.81
-T = 1
-tb = 0.4
-te = 0.6
-x0 = Vx * T / 2
-xf = 3 * Vx * T / 2
+# Definindo os parâmetros da caminhada do robô
+Vx = 1            # Velocidade no eixo x
+Vy = 0            # Velocidade no eixo y (não utilizada no cálculo atual)
+Vphi = 0          # Velocidade angular (não utilizada no cálculo atual)
+h = 0.5           # Altura do centro de massa
+g = 9.81          # Aceleração da gravidade
+T = 1             # Período do passo
+tb = 0.4          # Tempo inicial de suporte duplo
+te = 0.6          # Tempo final de suporte duplo
+x0 = Vx * T / 2   # Posição inicial
+xf = 3 * Vx * T / 2  # Posição final
 p0 = Vx * T / 2
 ps = Vx * T
 pf = 3 * Vx * T / 2
+md1 = 5 / 4 * Vx * T
+md2 = 5 / 4 * Vx * T
 
+# Calculando p(t)
+p = []
+for t in vetor_tempo:
+    if t <= tb:
+        p.append(p0 + md1 * t)
+    elif tb < t <= te:
+        p.append(ps)
+    else:
+        p.append(ps + md2 * (t - te))
+
+# Calculando lambda
+lamb = math.sqrt(g / h)
+
+# Calculando K0 e Kf
+K0 = md1 / lamb * math.sinh(-lamb * tb)
+Kf = md2 / lamb * math.sinh(lamb * (T - te))
+
+# Calculando As e Bs
+As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) + math.exp(-lamb * T))
+Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) + math.exp(-lamb * T))
+
+# Calculando x(t)
+x = np.zeros(len(vetor_tempo))
 for i in range(len(vetor_tempo)):
-    if vetor_tempo[i] <= tb:
-        p.append(Vx*T/2 + 5/4*Vx*T*vetor_tempo[i])
-    elif vetor_tempo[i] >= tb and vetor_tempo[i] <= te:
-        p.append(Vx*T)
-    elif vetor_tempo[i] > te:
-        p.append(Vx*T + 5/4*Vx*T*(vetor_tempo[i] - te))
+    t = vetor_tempo[i]
+    if t <= tb:
+        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1 / lamb) * math.sinh(-lamb * (t - tb))
+    elif tb < t <= te:
+        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t)
+    else:
+        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2 / lamb) * math.sinh(lamb * (t - te))
 
-print(p)
-
-lamb = math.sqrt(h / g)
-
-K0 = x0 - p0 + 5/4*Vx*T/lamb*math.sinh(-lamb*tb)
-
-Kf = xf - pf + 5/4*Vx*T/lamb*math.sinh(-lamb*(T - te))
-
-As = (Kf - K0*math.exp(-lamb*T)) / (math.exp(lamb*T) + math.exp(-lamb*T))
-
-Bs = (K0*math.exp(lamb*T) - Kf) / (math.exp(lamb*T) + math.exp(-lamb*T))
-
-x = []
-
-for i in range(len(vetor_tempo)):
-    if vetor_tempo[i] <= tb:
-        x.append(p[i] + As*math.exp(lamb*T) + Bs*math.exp(-lamb*T) - 5/4*Vx*T/lamb*math.sinh(-lamb*tb))
-    elif vetor_tempo[i] >= tb and vetor_tempo[i] <= te:
-        x.append(p[i] + As*math.exp(lamb*T) + Bs*math.exp(-lamb*T))
-    elif vetor_tempo[i] > te:
-        x.append(p[i] + As*math.exp(lamb*T) + Bs*math.exp(-lamb*T) - 5/4*Vx*T/lamb*math.sinh(-lamb*(T-te)))
-
+# Resultado
 print(x)
