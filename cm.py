@@ -63,6 +63,50 @@ def get_Xcm(Vx, xi):
 
     return x
 
+def get_Ycm(Vy, yi):
+
+    py0 = Vy * T / 2
+    pys = Vy * T
+    pyf = 3 * Vy * T / 2
+    md1y = (pys - py0) / tb
+    md2y = (pyf - pys) / (T - te)
+
+    # Calculando px(t) (ZMP)
+    py = np.zeros(len(tempo))
+    for i in range(len(tempo)):
+        if tempo[i] <= tb:
+            py[i] = py0 + md1y * tempo[i]
+        elif tb < tempo[i] <= te:
+            py[i] = pys
+        else:
+            py[i] = pys + md2y * (tempo[i] - te)
+
+    # Calculando lambda
+    lamb = math.sqrt(g / h)
+
+    # Calculando K0 e Kf
+    K0 = md1y / lamb * math.sinh(-lamb * tb)
+    Kf = md2y / lamb * math.sinh(lamb * (T - te))
+
+    # Calculando As e Bs
+    As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) - math.exp(-lamb * T))
+    Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) - math.exp(-lamb * T))
+
+    # Calculando y(t)
+    y = np.zeros(len(tempo))
+    for i in range(len(tempo)):
+        t = tempo[i]
+        if t <= tb:
+            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1y / lamb) * math.sinh(
+                lamb * (t - tb)) + yi
+        elif tb < t <= te:
+            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) + yi
+        else:
+            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2y / lamb) * math.sinh(
+                lamb * (t - te)) + yi
+
+    return x
+
 x = get_Xcm(1, 2)
 
 # Plotando x(t) ao longo do tempo
