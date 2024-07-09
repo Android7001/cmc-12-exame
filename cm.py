@@ -2,18 +2,15 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-# Defina os parâmetros do vetor de tempo
-tempo_inicial = 0  # início do intervalo de tempo
-tempo_final = 1  # final do intervalo de tempo
-intervalo = 0.01  # intervalo de tempo em segundos (10^-2 segundos)
-
-# Crie o vetor de tempo usando numpy
+tempo_inicial = 0
+tempo_final = 1
+intervalo = 0.01
 tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)
 
 # Definindo os parâmetros da caminhada do robô
-Vy = 0  # Velocidade no eixo y (não utilizada no cálculo atual)
 Vphi = 0  # Velocidade angular (não utilizada no cálculo atual)
 h = 0.5  # Altura do centro de massa
+L= 0.25 # Largura do robo
 g = 9.81  # Aceleração da gravidade
 T = 1  # Período do passo
 tb = 0.4  # Tempo inicial de suporte duplo
@@ -21,9 +18,9 @@ te = 0.6  # Tempo final de suporte duplo
 
 def get_Xcm(Vx, xi):
 
-    px0 = Vx * T / 2
-    pxs = Vx * T
-    pxf = 3 * Vx * T / 2
+    px0 = 0 # Posicao inicial do ZPM/CM
+    pxs = Vx * T / 2 # Posicao do pe de suporte em relacao ao CM
+    pxf = Vx * T # Posicao final do ZPM/CM
     md1x = (pxs - px0) / tb
     md2x = (pxf - pxs) / (T - te)
 
@@ -63,11 +60,17 @@ def get_Xcm(Vx, xi):
 
     return x
 
-def get_Ycm(Vy, yi):
+def get_Ycm(Vy, yi, abrindo = True):
 
-    py0 = Vy * T / 2
-    pys = Vy * T
-    pyf = 3 * Vy * T / 2
+    if(abrindo):
+        py0 = 0
+        pys = -np.sign(Vy) * L / 2
+        pyf = np.sign(Vy)* Vy * T
+    else:
+        py0 = 0
+        pys = np.sign(Vy) * (L / 2 + Vy * T)
+        pyf = np.sign(Vy) * Vy * T
+
     md1y = (pys - py0) / tb
     md2y = (pyf - pys) / (T - te)
 
@@ -105,13 +108,20 @@ def get_Ycm(Vy, yi):
             y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2y / lamb) * math.sinh(
                 lamb * (t - te)) + yi
 
-    return x
+    return y
 
-x = get_Xcm(1, 2)
+def get_Phicm(Vphi, phi0, abrindo = True):
+
+
+
+x = get_Xcm(1, 0)
+
+y = get_Ycm(1, 0, True)
+
 
 # Plotando x(t) ao longo do tempo
 plt.figure(figsize=(10, 6))
-plt.plot(tempo, x, label='Posição do Centro de Massa (x)', color='b')
+plt.plot(tempo, y, label='Posição do Centro de Massa (y)', color='b')
 plt.xlabel('Tempo (s)')
 plt.ylabel('Posição (m)')
 plt.title('Posição do Centro de Massa ao Longo do Tempo')
