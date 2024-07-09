@@ -27,20 +27,20 @@ md1 = 5 / 4 * Vx * T
 md2 = 5 / 4 * Vx * T
 
 # Calculando p(t)
-p = []
-for t in vetor_tempo:
-    if t <= tb:
-        p.append(p0 + md1 * t)
-    elif tb < t <= te:
-        p.append(ps)
+p = np.zeros(len(vetor_tempo))
+for i in range(len(vetor_tempo)):
+    if vetor_tempo[i] <= tb:
+        p[i] = p0 + md1 * vetor_tempo[i]
+    elif tb < vetor_tempo[i] <= te:
+        p[i] = ps
     else:
-        p.append(ps + md2 * (t - te))
+        p[i] = ps + md2 * (vetor_tempo[i] - te)
 
 # Calculando lambda
 lamb = math.sqrt(g / h)
 
 # Calculando K0 e Kf
-K0 = md1 / lamb * math.sinh(-lamb * tb)
+K0 = md1 / lamb * math.sinh(lamb * tb)
 Kf = md2 / lamb * math.sinh(lamb * (T - te))
 
 # Calculando As e Bs
