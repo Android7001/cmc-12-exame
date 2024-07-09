@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 # Defina os parâmetros do vetor de tempo
 tempo_inicial = 0  # início do intervalo de tempo
@@ -20,43 +21,50 @@ tb = 0.4          # Tempo inicial de suporte duplo
 te = 0.6          # Tempo final de suporte duplo
 x0 = Vx * T / 2   # Posição inicial
 xf = 3 * Vx * T / 2  # Posição final
-p0 = Vx * T / 2
-ps = Vx * T
-pf = 3 * Vx * T / 2
-md1 = 5 / 4 * Vx * T
-md2 = 5 / 4 * Vx * T
+px0 = Vx * T / 2
+pxs = Vx * T
+pxf = 3 * Vx * T / 2
+md1x = (pxs - px0) / tb
+md2x = (pxf - pxs) / (T - te)
 
 # Calculando p(t)
-p = np.zeros(len(vetor_tempo))
+px = np.zeros(len(vetor_tempo))
 for i in range(len(vetor_tempo)):
     if vetor_tempo[i] <= tb:
-        p[i] = p0 + md1 * vetor_tempo[i]
+        px[i] = px0 + md1x * vetor_tempo[i]
     elif tb < vetor_tempo[i] <= te:
-        p[i] = ps
+        px[i] = pxs
     else:
-        p[i] = ps + md2 * (vetor_tempo[i] - te)
+        px[i] = pxs + md2x * (vetor_tempo[i] - te)
 
 # Calculando lambda
 lamb = math.sqrt(g / h)
 
 # Calculando K0 e Kf
-K0 = md1 / lamb * math.sinh(lamb * tb)
-Kf = md2 / lamb * math.sinh(lamb * (T - te))
+K0 = md1x / lamb * math.sinh(-lamb * tb)
+Kf = md2x / lamb * math.sinh(lamb * (T - te))
 
 # Calculando As e Bs
-As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) + math.exp(-lamb * T))
-Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) + math.exp(-lamb * T))
+As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) - math.exp(-lamb * T))
+Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) - math.exp(-lamb * T))
 
 # Calculando x(t)
 x = np.zeros(len(vetor_tempo))
 for i in range(len(vetor_tempo)):
     t = vetor_tempo[i]
     if t <= tb:
-        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1 / lamb) * math.sinh(-lamb * (t - tb))
+        x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1x / lamb) * math.sinh(lamb * (t - tb))
     elif tb < t <= te:
-        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t)
+        x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t)
     else:
-        x[i] = p[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2 / lamb) * math.sinh(lamb * (t - te))
+        x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2x / lamb) * math.sinh(lamb * (t - te))
 
-# Resultado
-print(x)
+# Plotando x(t) ao longo do tempo
+plt.figure(figsize=(10, 6))
+plt.plot(vetor_tempo, x, label='Posição do Centro de Massa (x)', color='b')
+plt.xlabel('Tempo (s)')
+plt.ylabel('Posição (m)')
+plt.title('Posição do Centro de Massa ao Longo do Tempo')
+plt.legend()
+plt.grid(True)
+plt.show()
