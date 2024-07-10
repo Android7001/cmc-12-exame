@@ -89,24 +89,4 @@ class FeetPoses:
                     psi_a.append(psi0 - 2* Vpsi * (self.phi_e - self.phi_b))
         return psi_a
     
-# Parâmetros
-# T = 1
-# t_b = 0.4
-# t_e = 0.6
-# t_inicio = 0
-# t_fim = 1
-# passo = 0.01
-#
-# # Instancia a classe e obtém os valores de z
-feet_poses = FeetPoses()
-y_a = feet_poses.get_x_foot(1,0)#
-
-# Plotagem
-plt.plot(feet_poses.vetor_tempo, y_a, label='y_a')
-#plt.plot(feet_poses.vetor_tempo, zponto_a, label='zPonto_a')
-plt.xlabel('Tempo (s)')
-plt.ylabel('y')
-plt.legend()
-plt.show()
-
 
