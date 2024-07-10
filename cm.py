@@ -12,7 +12,7 @@ class CM:
         self.te = te  # Tempo final de suporte duplo
         self.tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)  # Vetor de tempo
 
-    def get_Xcm(self, Vx, xi):
+    def get_delta_Xcm(self, Vx, xi):
         px0 = 0  # Posicao inicial do ZPM/CM
         pxs = Vx * self.T / 2  # Posicao do pe de suporte em relacao ao CM
         pxf = Vx * self.T  # Posicao final do ZPM/CM
@@ -55,7 +55,7 @@ class CM:
 
         return x
 
-    def get_Ycm(self, Vy, yi, abrindo=True):
+    def get_delta_Ycm(self, Vy, yi, abrindo=True):
         if abrindo:
             py0 = 0
             pys = -np.sign(Vy) * self.L / 2
@@ -104,7 +104,7 @@ class CM:
 
         return y
 
-    def get_Phicm(self, Vphi, phi0, abrindo=True):
+    def get_delta_Phicm(self, Vphi, phi0, abrindo=True):
         psi = self.tempo / self.T
         psib = self.tb / self.T
         psie = self.te / self.T
