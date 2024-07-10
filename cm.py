@@ -104,7 +104,7 @@ class CM:
 
         return y
 
-    def get_delta_Phicm(self, Vphi, phi0, abrindo=True):
+    def get_delta_Phicm(self, Vphi, phi0):
         psi = self.tempo / self.T
         psib = self.tb / self.T
         psie = self.te / self.T
