@@ -40,13 +40,56 @@ class FeetPoses:
         return z_a, zponto_a
     
     def get_x_foot(self, Vx, xi):
-        return
+        x_a = []
+        for tempo in self.vetor_tempo:
+            phi = tempo % self.T
+            if phi < self.phi_b:
+                x_a.append(xi)
+            elif self.phi_b <= phi < self.phi_e:
+                x_a.append(xi + 2* Vx * (phi- self.phi_b))
+            else:
+                x_a.append(xi + 2* Vx * (self.phi_e - self.phi_b))
+        return x_a
 
     def get_y_foot(self, Vy, yi, abrindo = True):
-        return
+        y_a = []
+        for tempo in self.vetor_tempo:
+            phi = tempo % self.T
+            if abrindo:
+                if phi < self.phi_b:
+                    y_a.append(yi)
+                elif self.phi_b <= phi < self.phi_e:
+                    y_a.append(yi + 2* Vy * (phi- self.phi_b))
+                else:
+                    y_a.append(yi + 2* Vy * (self.phi_e - self.phi_b))
+            else:
+                if phi < self.phi_b:
+                    y_a.append(yi)
+                elif self.phi_b <= phi < self.phi_e:
+                    y_a.append(yi - 2* Vy * (phi- self.phi_b))
+                else:
+                    y_a.append(yi - 2* Vy * (self.phi_e - self.phi_b))
+        return y_a
 
     def get_psi_foot(self, Vpsi, psi0, abrindo = True):
-        return
+        psi_a = []
+        for tempo in self.vetor_tempo:
+            phi = tempo % self.T
+            if abrindo:
+                if phi < self.phi_b:
+                    psi_a.append(psi0)
+                elif self.phi_b <= phi < self.phi_e:
+                    psi_a.append(psi0 + 2* Vpsi * (phi- self.phi_b))
+                else:
+                    psi_a.append(psi0 + 2* Vpsi * (self.phi_e - self.phi_b))
+            else:
+                if phi < self.phi_b:
+                    psi_a.append(psi0)
+                elif self.phi_b <= phi < self.phi_e:
+                    psi_a.append(psi0 - 2* Vpsi * (phi- self.phi_b))
+                else:
+                    psi_a.append(psi0 - 2* Vpsi * (self.phi_e - self.phi_b))
+        return psi_a
     
 # Parâmetros
 # T = 1
