@@ -1,6 +1,5 @@
 from cm import CM
 from foot import FeetPoses
-from angle import Angles
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -11,26 +10,27 @@ Vphi = math.pi/3
 
 def WalkinRobot():
     cm = CM()
-    feet_poses = FeetPoses()
+    #feet_poses = FeetPoses()
 
-    x = [0]
-    y = [0]
+    x = []
+    y = []
     phi = [0]
     xfeet = [0]
     yfeet = [0]
     phifeet = [0]
     xcm = [0]
     ycm = [0]
-    for _ in range(180):
-        x = np.concatenate((x, cm.get_Xcm(Vx, xcm[-1])))
-        y = np.concatenate((y, cm.get_Ycm(Vy, ycm[-1])))
-        phicm = np.concatenate((phi, cm.get_Phicm(Vphi, phicm[-1])))
+    for _ in range(1):
+        phi = cm.get_delta_Phicm(Vphi, phi[-1])
+        x = cm.get_delta_Xcm(Vx, 0)
+        y = cm.get_delta_Ycm(Vy, 0)
+        delta_x = x*math.cos(phi[-1]) - y*math.sin(phi[-1])
+        delta_y = x*math.sin(phi[-1]) + y*math.cos(phi[-1])
 
-
-
-    for i in range(180):
-        xcm[i] = x[i]*math.cos(phi[i]) - y[i]*math.sin(phi[i])
-        ycm[i] = x[i]*math.sin(phi[i]) + y[i]*math.cos(phi[i])
+        for i in range(len(delta_x)):
+            xcm.append(delta_x[i] + xcm[-1])
+        for i in range(len(delta_y)):
+            ycm.append(delta_y[i] + ycm[-1])
 
     return xcm, ycm, phi
 
