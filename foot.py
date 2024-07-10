@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 t_inicio = 0
-t_fim = 1
+t_fim = 4
 passo = 0.01
 T = 1 
 
-t_b = 0.1
-t_e = 0.9
+t_b = 0.4
+t_e = 0.6
 phi_b = t_b / T
 phi_e = t_e / T
 
@@ -30,14 +30,14 @@ def v_ponto(phi):
 
 z_a = []
 zponto_a = []
-z_cm = 1
+z_cm = 0
 z_step = 1
 
 
 for tempo in vetor_tempo:
     phi = tempo % T  
-    z_a.append(z_cm - z_step * v(phi))
-    zponto_a.append(-z_step * v_ponto(phi))
+    z_a.append(z_cm + z_step * v(phi))
+    zponto_a.append(z_step * v_ponto(phi))
 
 
 plt.plot(vetor_tempo, z_a, label='z_a')  
