@@ -6,21 +6,21 @@ import matplotlib.pyplot as plt
 
 Vx = 1
 Vy = 0
-Vphi = math.pi/3
+Vphi = math.pi/2
 
 def WalkinRobot():
     cm = CM()
     #feet_poses = FeetPoses()
     delta_tempo = cm.tempo
 
-    tempo = [0]
-    phi = [0]
-    xfeet = [0]
-    yfeet = [0]
-    phifeet = [0]
-    xcm = [0]
-    ycm = [0]
-    for i in range(1): # 2 = number of steps
+    tempo = np.zeros(1)
+    phi = np.zeros(1)
+    xfeet = np.zeros(1)
+    yfeet = np.zeros(1)
+    phifeet = np.zeros(1)
+    xcm = np.zeros(1)
+    ycm = np.zeros(1)
+    for i in range(2): # 2 = number of steps
         phi = cm.get_delta_Phicm(Vphi, phi[-1])
         x = cm.get_delta_Xcm(Vx, 0)
         y = cm.get_delta_Ycm(Vy, 0)
@@ -29,15 +29,16 @@ def WalkinRobot():
 
         xcm = np.concatenate((xcm, delta_x + xcm[-1]))
         ycm = np.concatenate((ycm, delta_y + ycm[-1]))
-        tempo = np.concatenate((tempo, (i + 1) * delta_tempo + tempo[-1]))
+        if (i < 2):
+            tempo = np.concatenate((tempo, delta_tempo + tempo[-1]))
 
     return xcm, ycm, phi, tempo
 
 xcm, ycm, phicm, tempo = WalkinRobot()
 plt.plot(tempo, xcm, label='y(x)')
 plt.xlabel('x (cm)')
-plt.ylabel('y (cm)')
-plt.title('Trajetória do Centro de Massa (y em função de x)')
+plt.ylabel('t (s)')
+plt.title('Trajetória do Centro de Massa (x em função de )')
 plt.legend()
 plt.grid(True)
 plt.show()

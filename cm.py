@@ -10,7 +10,7 @@ class CM:
         self.T = T  # Período do passo
         self.tb = tb  # Tempo inicial de suporte duplo
         self.te = te  # Tempo final de suporte duplo
-        self.tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)  # Vetor de tempo
+        self.tempo = np.arange(tempo_inicial, tempo_final, intervalo)  # Vetor de tempo
 
     def get_delta_Xcm(self, Vx, xi):
         px0 = 0  # Posicao inicial do ZPM/CM
@@ -144,4 +144,4 @@ class CM:
 # plt.ylabel('Posição/Ângulo')
 # plt.legend()
 # plt.title('Posição do Centro de Massa e Ângulo durante a Caminhada do Robô')
-# plt.show()
+#plt.show()
