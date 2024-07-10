@@ -38,8 +38,9 @@ class Angles:
         rotacao = np.array([[math.cos(self.psi_l[t]), -math.sin(self.psi_l[t])],
                             [math.sin(self.psi_l[t]), math.cos(self.psi_l[t])]])
 
-        [x1_l_h2f, y1_l_h2f] = np.dot(rotacao, [x_l_h2f, y_l_h2f]) # cálculo de x' left hip to foot através da matriz rotação psi
+        [x1_l_h2f, y1_l_h2f] = np.dot(rotacao, [x_l_h2f, y_l_h2f]) # cálculo de (x' e y') left hip to foot através da matriz rotação psi
 
+        # cálculo de x'', y'' e z''
         x2_l_h2f = x1_l_h2f - self.x_l_a2f
         y2_l_h2f = y1_l_h2f - self.y_l_a2f
         z2_l_h2f = z_l_h2f - self.z_l_a2f
