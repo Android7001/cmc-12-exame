@@ -2,129 +2,146 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-tempo_inicial = 0
-tempo_final = 1
-intervalo = 0.01
-tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)
+class CM:
+    def __init__(self, h=0.5, L=0.25, g=9.81, T=1, tb=0.4, te=0.6, tempo_inicial=0, tempo_final=1, intervalo=0.01):
+        self.h = h  # Altura do centro de massa
+        self.L = L  # Largura do robô
+        self.g = g  # Aceleração da gravidade
+        self.T = T  # Período do passo
+        self.tb = tb  # Tempo inicial de suporte duplo
+        self.te = te  # Tempo final de suporte duplo
+        self.tempo = np.arange(tempo_inicial, tempo_final + intervalo, intervalo)  # Vetor de tempo
 
-# Definindo os parâmetros da caminhada do robô
-Vphi = 0  # Velocidade angular (não utilizada no cálculo atual)
-h = 0.5  # Altura do centro de massa
-L= 0.25 # Largura do robo
-g = 9.81  # Aceleração da gravidade
-T = 1  # Período do passo
-tb = 0.4  # Tempo inicial de suporte duplo
-te = 0.6  # Tempo final de suporte duplo
+    def get_Xcm(self, Vx, xi):
+        px0 = 0  # Posicao inicial do ZPM/CM
+        pxs = Vx * self.T / 2  # Posicao do pe de suporte em relacao ao CM
+        pxf = Vx * self.T  # Posicao final do ZPM/CM
+        md1x = (pxs - px0) / self.tb
+        md2x = (pxf - pxs) / (self.T - self.te)
 
-def get_Xcm(Vx, xi):
+        # Calculando px(t) (ZMP)
+        px = np.zeros(len(self.tempo))
+        for i in range(len(self.tempo)):
+            if self.tempo[i] <= self.tb:
+                px[i] = px0 + md1x * self.tempo[i]
+            elif self.tb < self.tempo[i] <= self.te:
+                px[i] = pxs
+            else:
+                px[i] = pxs + md2x * (self.tempo[i] - self.te)
 
-    px0 = 0 # Posicao inicial do ZPM/CM
-    pxs = Vx * T / 2 # Posicao do pe de suporte em relacao ao CM
-    pxf = Vx * T # Posicao final do ZPM/CM
-    md1x = (pxs - px0) / tb
-    md2x = (pxf - pxs) / (T - te)
+        # Calculando lambda
+        lamb = math.sqrt(self.g / self.h)
 
-    # Calculando px(t) (ZMP)
-    px = np.zeros(len(tempo))
-    for i in range(len(tempo)):
-        if tempo[i] <= tb:
-            px[i] = px0 + md1x * tempo[i]
-        elif tb < tempo[i] <= te:
-            px[i] = pxs
+        # Calculando K0 e Kf
+        K0 = md1x / lamb * math.sinh(-lamb * self.tb)
+        Kf = md2x / lamb * math.sinh(lamb * (self.T - self.te))
+
+        # Calculando As e Bs
+        As = (Kf - K0 * math.exp(-lamb * self.T)) / (math.exp(lamb * self.T) - math.exp(-lamb * self.T))
+        Bs = (K0 * math.exp(lamb * self.T) - Kf) / (math.exp(lamb * self.T) - math.exp(-lamb * self.T))
+
+        # Calculando x(t)
+        x = np.zeros(len(self.tempo))
+        for i in range(len(self.tempo)):
+            t = self.tempo[i]
+            if t <= self.tb:
+                x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1x / lamb) * math.sinh(
+                    lamb * (t - self.tb)) + xi
+            elif self.tb < t <= self.te:
+                x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) + xi
+            else:
+                x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2x / lamb) * math.sinh(
+                    lamb * (t - self.te)) + xi
+
+        return x
+
+    def get_Ycm(self, Vy, yi, abrindo=True):
+        if abrindo:
+            py0 = 0
+            pys = -np.sign(Vy) * self.L / 2
+            pyf = np.sign(Vy) * Vy * self.T
         else:
-            px[i] = pxs + md2x * (tempo[i] - te)
+            py0 = 0
+            pys = np.sign(Vy) * (self.L / 2 + Vy * self.T)
+            pyf = np.sign(Vy) * Vy * self.T
 
-    # Calculando lambda
-    lamb = math.sqrt(g / h)
+        md1y = (pys - py0) / self.tb
+        md2y = (pyf - pys) / (self.T - self.te)
 
-    # Calculando K0 e Kf
-    K0 = md1x / lamb * math.sinh(-lamb * tb)
-    Kf = md2x / lamb * math.sinh(lamb * (T - te))
+        # Calculando py(t) (ZMP)
+        py = np.zeros(len(self.tempo))
+        for i in range(len(self.tempo)):
+            if self.tempo[i] <= self.tb:
+                py[i] = py0 + md1y * self.tempo[i]
+            elif self.tb < self.tempo[i] <= self.te:
+                py[i] = pys
+            else:
+                py[i] = pys + md2y * (self.tempo[i] - self.te)
 
-    # Calculando As e Bs
-    As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) - math.exp(-lamb * T))
-    Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) - math.exp(-lamb * T))
+        # Calculando lambda
+        lamb = math.sqrt(self.g / self.h)
 
-    # Calculando x(t)
-    x = np.zeros(len(tempo))
-    for i in range(len(tempo)):
-        t = tempo[i]
-        if t <= tb:
-            x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1x / lamb) * math.sinh(
-                lamb * (t - tb)) + xi
-        elif tb < t <= te:
-            x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) + xi
-        else:
-            x[i] = px[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2x / lamb) * math.sinh(
-                lamb * (t - te)) + xi
+        # Calculando K0 e Kf
+        K0 = md1y / lamb * math.sinh(-lamb * self.tb)
+        Kf = md2y / lamb * math.sinh(lamb * (self.T - self.te))
 
-    return x
+        # Calculando As e Bs
+        As = (Kf - K0 * math.exp(-lamb * self.T)) / (math.exp(lamb * self.T) - math.exp(-lamb * self.T))
+        Bs = (K0 * math.exp(lamb * self.T) - Kf) / (math.exp(lamb * self.T) - math.exp(-lamb * self.T))
 
-def get_Ycm(Vy, yi, abrindo = True):
+        # Calculando y(t)
+        y = np.zeros(len(self.tempo))
+        for i in range(len(self.tempo)):
+            t = self.tempo[i]
+            if t <= self.tb:
+                y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1y / lamb) * math.sinh(
+                    lamb * (t - self.tb)) + yi
+            elif self.tb < t <= self.te:
+                y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) + yi
+            else:
+                y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2y / lamb) * math.sinh(
+                    lamb * (t - self.te)) + yi
 
-    if(abrindo):
-        py0 = 0
-        pys = -np.sign(Vy) * L / 2
-        pyf = np.sign(Vy)* Vy * T
-    else:
-        py0 = 0
-        pys = np.sign(Vy) * (L / 2 + Vy * T)
-        pyf = np.sign(Vy) * Vy * T
+        return y
 
-    md1y = (pys - py0) / tb
-    md2y = (pyf - pys) / (T - te)
+    def get_Phicm(self, Vphi, phi0, abrindo=True):
+        psi = self.tempo / self.T
+        psib = self.tb / self.T
+        psie = self.te / self.T
+        phif = Vphi * self.T
 
-    # Calculando px(t) (ZMP)
-    py = np.zeros(len(tempo))
-    for i in range(len(tempo)):
-        if tempo[i] <= tb:
-            py[i] = py0 + md1y * tempo[i]
-        elif tb < tempo[i] <= te:
-            py[i] = pys
-        else:
-            py[i] = pys + md2y * (tempo[i] - te)
+        phi = np.zeros(len(self.tempo))
+        for i in range(len(self.tempo)):
+            if psi[i] <= psib:
+                phi[i] = phi0
+            elif psib < psi[i] <= psie:
+                phi[i] = phif / 2 * (1 - math.cos(math.pi * (psi[i] - psib) / (psie - psib))) + phi0
+            else:
+                phi[i] = phif + phi0
 
-    # Calculando lambda
-    lamb = math.sqrt(g / h)
+        return phi
 
-    # Calculando K0 e Kf
-    K0 = md1y / lamb * math.sinh(-lamb * tb)
-    Kf = md2y / lamb * math.sinh(lamb * (T - te))
+# Exemplo de uso da classe
+robo = CM()
 
-    # Calculando As e Bs
-    As = (Kf - K0 * math.exp(-lamb * T)) / (math.exp(lamb * T) - math.exp(-lamb * T))
-    Bs = (K0 * math.exp(lamb * T) - Kf) / (math.exp(lamb * T) - math.exp(-lamb * T))
+Vx = 1
+xi = 0
+x = robo.get_Xcm(Vx, xi)
 
-    # Calculando y(t)
-    y = np.zeros(len(tempo))
-    for i in range(len(tempo)):
-        t = tempo[i]
-        if t <= tb:
-            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md1y / lamb) * math.sinh(
-                lamb * (t - tb)) + yi
-        elif tb < t <= te:
-            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) + yi
-        else:
-            y[i] = py[i] + As * math.exp(lamb * t) + Bs * math.exp(-lamb * t) - (md2y / lamb) * math.sinh(
-                lamb * (t - te)) + yi
+Vy = 1
+yi = 0
+y = robo.get_Ycm(Vy, yi)
 
-    return y
+Vphi = 0.1
+phi0 = 0
+phi = robo.get_Phicm(Vphi, phi0)
 
-def get_Phicm(Vphi, phi0, abrindo = True):
-
-
-
-x = get_Xcm(1, 0)
-
-y = get_Ycm(1, 0, True)
-
-
-# Plotando x(t) ao longo do tempo
-plt.figure(figsize=(10, 6))
-plt.plot(tempo, y, label='Posição do Centro de Massa (y)', color='b')
+# Plotando os resultados
+plt.plot(robo.tempo, x, label='x(t)')
+plt.plot(robo.tempo, y, label='y(t)')
+plt.plot(robo.tempo, phi, label='phi(t)')
 plt.xlabel('Tempo (s)')
-plt.ylabel('Posição (m)')
-plt.title('Posição do Centro de Massa ao Longo do Tempo')
+plt.ylabel('Posição/Ângulo')
 plt.legend()
-plt.grid(True)
+plt.title('Posição do Centro de Massa e Ângulo durante a Caminhada do Robô')
 plt.show()
