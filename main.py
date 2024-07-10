@@ -1,5 +1,5 @@
 from cm import CM
-from foot import FeetPoses
+from foot import FootPose
 
 import numpy as np
 import math
