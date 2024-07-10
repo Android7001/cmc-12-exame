@@ -40,23 +40,23 @@ class FeetPoses:
         return z_a, zponto_a
 
 # Parâmetros
-T = 1
-t_b = 0.4
-t_e = 0.6
-t_inicio = 0
-t_fim = 1
-passo = 0.01
-
-# Instancia a classe e obtém os valores de z
-feet_poses = FeetPoses(T, t_b, t_e, t_inicio, t_fim, passo)
-z_a, zponto_a = feet_poses.get_z()
-
-# Plotagem
-plt.plot(feet_poses.vetor_tempo, z_a, label='z_a')
-plt.plot(feet_poses.vetor_tempo, zponto_a, label='zPonto_a')
-plt.xlabel('Tempo (s)')
-plt.ylabel('Valores')
-plt.legend()
-plt.show()
+# T = 1
+# t_b = 0.4
+# t_e = 0.6
+# t_inicio = 0
+# t_fim = 1
+# passo = 0.01
+#
+# # Instancia a classe e obtém os valores de z
+# feet_poses = FeetPoses(T, t_b, t_e, t_inicio, t_fim, passo)
+# z_a, zponto_a = feet_poses.get_z()
+#
+# # Plotagem
+# plt.plot(feet_poses.vetor_tempo, z_a, label='z_a')
+# plt.plot(feet_poses.vetor_tempo, zponto_a, label='zPonto_a')
+# plt.xlabel('Tempo (s)')
+# plt.ylabel('Valores')
+# plt.legend()
+# plt.show()
 
 
