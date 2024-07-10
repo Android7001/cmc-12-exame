@@ -6,25 +6,33 @@ import math
 import matplotlib.pyplot as plt
 
 Vx = 1
-Vy = 1
-Vphi = math.pi
+Vy = 0
+Vphi = math.pi/3
 
 def WalkinRobot():
     cm = CM()
     feet_poses = FeetPoses()
 
-    xcm = [0]
-    ycm = [0]
-    phicm = [0]
+    x = [0]
+    y = [0]
+    phi = [0]
     xfeet = [0]
     yfeet = [0]
     phifeet = [0]
-    for _ in range(5):
-        xcm = np.concatenate((xcm, cm.get_Xcm(Vx, xcm[-1])))
-        ycm = np.concatenate((ycm, cm.get_Ycm(Vy, ycm[-1])))
-        phicm = np.concatenate((phicm, cm.get_Phicm(Vphi, phicm[-1])))
+    xcm = [0]
+    ycm = [0]
+    for _ in range(180):
+        x = np.concatenate((x, cm.get_Xcm(Vx, xcm[-1])))
+        y = np.concatenate((y, cm.get_Ycm(Vy, ycm[-1])))
+        phicm = np.concatenate((phi, cm.get_Phicm(Vphi, phicm[-1])))
 
-    return xcm, ycm, phicm
+
+
+    for i in range(180):
+        xcm[i] = x[i]*math.cos(phi[i]) - y[i]*math.sin(phi[i])
+        ycm[i] = x[i]*math.sin(phi[i]) + y[i]*math.cos(phi[i])
+
+    return xcm, ycm, phi
 
 xcm, ycm, phicm = WalkinRobot()
 plt.plot(xcm, ycm, label='y(x)')
