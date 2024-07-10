@@ -100,15 +100,15 @@ class FeetPoses:
 # passo = 0.01
 #
 # # Instancia a classe e obtém os valores de z
-# feet_poses = FeetPoses(T, t_b, t_e, t_inicio, t_fim, passo)
-# z_a, zponto_a = feet_poses.get_z()
-#
-# # Plotagem
-# plt.plot(feet_poses.vetor_tempo, z_a, label='z_a')
-# plt.plot(feet_poses.vetor_tempo, zponto_a, label='zPonto_a')
-# plt.xlabel('Tempo (s)')
-# plt.ylabel('Valores')
-# plt.legend()
-# plt.show()
+feet_poses = FeetPoses()
+y_a = feet_poses.get_x_foot(1,0)#
+
+# Plotagem
+plt.plot(feet_poses.vetor_tempo, y_a, label='y_a')
+#plt.plot(feet_poses.vetor_tempo, zponto_a, label='zPonto_a')
+plt.xlabel('Tempo (s)')
+plt.ylabel('y')
+plt.legend()
+plt.show()
 
 
