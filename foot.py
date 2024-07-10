@@ -38,7 +38,16 @@ class FeetPoses:
             z_a.append(z_cm + z_step * self.v(phi))
             zponto_a.append(z_step * self.v_ponto(phi))
         return z_a, zponto_a
+    
+    def get_x_foot(self, Vx, xi):
+        return
 
+    def get_y_foot(self, Vy, yi, abrindo = True):
+        return
+
+    def get_psi_foot(self, Vpsi, psi0, abrindo = True):
+        return
+    
 # Parâmetros
 # T = 1
 # t_b = 0.4
