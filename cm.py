@@ -122,19 +122,19 @@ class CM:
         return phi
 
 # Exemplo de uso da classe
-#robo = CM()
-
+# robo = CM()
+#
 # Vx = 1
 # xi = 0
-# x = robo.get_Xcm(Vx, xi)
+# x = robo.get_delta_Xcm(Vx, xi)
 #
 # Vy = 1
 # yi = 0
-# y = robo.get_Ycm(Vy, yi)
+# y = robo.get_delta_Ycm(Vy, yi)
 #
 # Vphi = 0.1
 # phi0 = 0
-# phi = robo.get_Phicm(Vphi, phi0)
+# phi = robo.get_delta_Phicm(Vphi, phi0)
 #
 # # Plotando os resultados
 # plt.plot(robo.tempo, x, label='x(t)')
