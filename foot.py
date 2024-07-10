@@ -30,14 +30,12 @@ class FeetPoses:
 
     def get_z(self):
         z_a = []
-        zponto_a = []
         z_cm = 0
         z_step = 1
         for tempo in self.vetor_tempo:
             phi = tempo % self.T  
             z_a.append(z_cm + z_step * self.v(phi))
-            zponto_a.append(z_step * self.v_ponto(phi))
-        return z_a, zponto_a
+        return z_a
     
     def get_x_foot(self, Vx, xi):
         x_a = []
