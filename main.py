@@ -1,5 +1,6 @@
 from cm import CM
 from foot import FeetPoses
+from angle import Angles
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -10,16 +11,7 @@ Vphi = math.pi
 
 def WalkinRobot():
     cm = CM()
-    # Parâmetros
-    T = 1
-    t_b = 0.4
-    t_e = 0.6
-    t_inicio = 0
-    t_fim = 1
-    passo = 0.01
-
-    # Instancia a classe e obtém os valores de z
-    feet_poses = FeetPoses(T, t_b, t_e, t_inicio, t_fim, passo)
+    feet_poses = FeetPoses()
 
     xcm = [0]
     ycm = [0]
