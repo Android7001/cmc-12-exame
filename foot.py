@@ -61,43 +61,5 @@ class FootPose:
 
         return x_a, y_a, self.get_z(), psi_a
 
-# Exemplo de uso
-foot_pose = FootPose()
-v = [1.0, 0.5, 0.1]  # Velocidades [v_x, v_y, v_psi]
-initial_position = [0.0, 0.0, 0.0]  # Posição inicial [x, y, psi]
-x_positions, y_positions, z_positions, psi_positions = foot_pose.get_foot_position(v, initial_position)
 
-# Plotando as posições
-plt.figure(figsize=(12, 8))
-
-# Plot para a posição X
-plt.subplot(2, 2, 1)
-plt.plot(foot_pose.vetor_tempo, x_positions)
-plt.title('Posição X do Pé')
-plt.xlabel('Tempo (s)')
-plt.ylabel('Posição X (m)')
-
-# Plot para a posição Y
-plt.subplot(2, 2, 2)
-plt.plot(foot_pose.vetor_tempo, y_positions)
-plt.title('Posição Y do Pé')
-plt.xlabel('Tempo (s)')
-plt.ylabel('Posição Y (m)')
-
-# Plot para a posição Z
-plt.subplot(2, 2, 3)
-plt.plot(foot_pose.vetor_tempo, z_positions)
-plt.title('Posição Z do Pé')
-plt.xlabel('Tempo (s)')
-plt.ylabel('Posição Z (m)')
-
-# Plot para a posição Psi
-plt.subplot(2, 2, 4)
-plt.plot(foot_pose.vetor_tempo, psi_positions)
-plt.title('Posição Psi do Pé')
-plt.xlabel('Tempo (s)')
-plt.ylabel('Ângulo Psi (rad)')
-
-plt.tight_layout()
-plt.show()
 
