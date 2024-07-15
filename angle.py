@@ -7,16 +7,15 @@ class Angles:
         self.t_inicio = 0
         self.t_fim = 1
         self.passo = 0.01
-        self.a = 2 # tamanho da coxa
-        self.b = 1 # tamanho da canela
+        self.a = 2  # tamanho da coxa
+        self.b = 1  # tamanho da canela
 
-        # Precisa pegar os valores corretos
-        # _l_t2h: significa left do torço para a coxa
+        # Tradução do torso para a articulação do quadril esquerdo
         self.x_l_t2h = 0.2
         self.y_l_t2h = 0.2
         self.z_l_t2h = 0.2
 
-        # _l_a2f: significa left do calcanhar para o pé
+        # Tradução do calcanhar esquerdo para o pé
         self.x_l_a2f = 0.1
         self.y_l_a2f = 0.1
         self.z_l_a2f = 0.1
@@ -38,7 +37,7 @@ class Angles:
         rotacao = np.array([[math.cos(self.psi_l[t]), -math.sin(self.psi_l[t])],
                             [math.sin(self.psi_l[t]), math.cos(self.psi_l[t])]])
 
-        [x1_l_h2f, y1_l_h2f] = np.dot(rotacao, [x_l_h2f, y_l_h2f]) # cálculo de (x' e y') left hip to foot através da matriz rotação psi
+        [x1_l_h2f, y1_l_h2f] = np.dot(rotacao, [x_l_h2f, y_l_h2f])  # cálculo de (x' e y') left hip to foot através da matriz rotação psi
 
         # cálculo de x'', y'' e z''
         x2_l_h2f = x1_l_h2f - self.x_l_a2f
@@ -48,13 +47,23 @@ class Angles:
         c = math.sqrt(x2_l_h2f**2 + y2_l_h2f**2 + z2_l_h2f**2)
         h = math.sqrt(y2_l_h2f**2 + z2_l_h2f**2)
 
-        alpha = math.acos((self.b**2 + c**2 - self.a**2) / (2 * self.b * c))
-        beta = math.acos((self.a**2 + c**2 - self.b**2) / (2 * self.a * c))
-        gama = math.acos((self.a**2 + self.b**2 - c**2) / (2 * self.a * self.b))
+        # Garantir que os valores estejam no intervalo [-1, 1] para evitar erros de domínio
+        cos_alpha = (self.b**2 + c**2 - self.a**2) / (2 * self.b * c)
+        cos_alpha = min(1, max(-1, cos_alpha))
+        alpha = math.acos(cos_alpha)
 
-        return x2_l_h2f, h, alpha, beta, gama, z2_l_h2f
+        cos_beta = (self.a**2 + c**2 - self.b**2) / (2 * self.a * c)
+        cos_beta = min(1, max(-1, cos_beta))
+        beta = math.acos(cos_beta)
+
+        cos_gamma = (self.a**2 + self.b**2 - c**2) / (2 * self.a * self.b)
+        cos_gamma = min(1, max(-1, cos_gamma))
+        gamma = math.acos(cos_gamma)
+
+        return x2_l_h2f, h, alpha, beta, gamma, z2_l_h2f
 
     def get_theta_hp(self):
+        # ângulo do quadril (pitch)
         vetor_theta_hp = []
         for t in range(len(self.vetor_tempo)):
             x2_l_h2f, h, _, beta, _, _ = self._calculate_common_terms(t)
@@ -63,14 +72,16 @@ class Angles:
         return vetor_theta_hp
 
     def get_theta_k(self):
+        # ângulo do joelho
         vetor_theta_k = []
         for t in range(len(self.vetor_tempo)):
-            _, _, _, _, gama, _ = self._calculate_common_terms(t)
-            theta_k = math.pi - gama
+            _, _, _, _, gamma, _ = self._calculate_common_terms(t)
+            theta_k = math.pi - gamma
             vetor_theta_k.append(theta_k)
         return vetor_theta_k
 
     def get_theta_ap(self):
+        # ângulo do tornozelo (pitch)
         vetor_theta_ap = []
         for t in range(len(self.vetor_tempo)):
             x2_l_h2f, h, alpha, _, _, _ = self._calculate_common_terms(t)
@@ -79,6 +90,7 @@ class Angles:
         return vetor_theta_ap
 
     def get_theta_hr(self):
+        # ângulo do quadril (roll)
         vetor_theta_hr = []
         for t in range(len(self.vetor_tempo)):
             x2_l_h2f, _, _, _, _, z2_l_h2f = self._calculate_common_terms(t)
@@ -87,6 +99,7 @@ class Angles:
         return vetor_theta_hr
 
     def get_theta_fr(self):
+        # ângulo do tornozelo (roll)
         vetor_theta_fr = []
         for t in range(len(self.vetor_tempo)):
             x2_l_h2f, _, _, _, _, z2_l_h2f = self._calculate_common_terms(t)
@@ -94,31 +107,3 @@ class Angles:
             theta_fr = -theta_hr
             vetor_theta_fr.append(theta_fr)
         return vetor_theta_fr
-
-
-# Parâmetros de tempo
-t_inicio = 0
-t_fim = 1
-passo = 0.01
-vetor_tempo = np.arange(t_inicio, t_fim, passo)
-
-# Preenchendo os vetores com valores
-x_l = np.linspace(0, 1, len(vetor_tempo))
-y_l = np.linspace(0, 1, len(vetor_tempo))
-z_l = np.linspace(0, 1, len(vetor_tempo))
-psi_l = np.linspace(0, 2 * np.pi, len(vetor_tempo))
-
-# Instancia a classe e calcula os ângulos
-angles = Angles(x_l,y_l,z_l,psi_l)
-vetor_theta_hp = angles.get_theta_hp()
-vetor_theta_k = angles.get_theta_k()
-vetor_theta_ap = angles.get_theta_ap()
-vetor_theta_hr = angles.get_theta_hr()
-vetor_theta_fr = angles.get_theta_fr()
-
-# Exibição dos resultados
-print("vetor_theta_hp:", vetor_theta_hp)
-print("vetor_theta_k:", vetor_theta_k)
-print("vetor_theta_ap:", vetor_theta_ap)
-print("vetor_theta_hr:", vetor_theta_hr)
-print("vetor_theta_fr:", vetor_theta_fr)

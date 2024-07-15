@@ -4,9 +4,9 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-Vx = 0.1
-Vy = 0.2
-Vphi = 0
+Vx = 0.5
+Vy = 0
+Vphi = 0.1
 steps = 5
 T = 1
 
