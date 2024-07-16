@@ -31,7 +31,7 @@ class FootPose:
     def get_z(self):
         z_a = []
         z_cm = 0
-        z_step = 0.3
+        z_step = 0.5
         for tempo in self.vetor_tempo:
             phi = tempo % self.T  
             z_a.append(z_cm + z_step * self.v(phi))
@@ -51,13 +51,13 @@ class FootPose:
                 y_a.append(yi)
                 psi_a.append(psi0)
             elif self.phi_b <= phi < self.phi_e:
-                x_a.append(xi + 2 * Vx * (phi - self.phi_b))
-                y_a.append(yi + 2 * Vy * (phi - self.phi_b))
-                psi_a.append(psi0 + 2 * Vpsi * (phi - self.phi_b))
+                x_a.append(xi + 10 * Vx * (phi - self.phi_b))
+                y_a.append(yi + 10 * Vy * (phi - self.phi_b))
+                psi_a.append(psi0 + 10 * Vpsi * (phi - self.phi_b))
             else:
-                x_a.append(xi + 2 * Vx * (self.phi_e - self.phi_b))
-                y_a.append(yi + 2 * Vy * (self.phi_e - self.phi_b))
-                psi_a.append(psi0 + 2 * Vpsi * (self.phi_e - self.phi_b))
+                x_a.append(xi + 10 * Vx * (self.phi_e - self.phi_b))
+                y_a.append(yi + 10 * Vy * (self.phi_e - self.phi_b))
+                psi_a.append(psi0 + 10 * Vpsi * (self.phi_e - self.phi_b))
 
         return x_a, y_a, self.get_z(), psi_a
 

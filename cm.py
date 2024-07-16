@@ -121,21 +121,21 @@ class CM:
 
         return phi
 
-# Exemplo de uso da classe
+# # Exemplo de uso da classe
 # robo = CM()
-#
+
 # Vx = 1
 # xi = 0
 # x = robo.get_delta_Xcm(Vx, xi)
-#
-# Vy = 1
+
+# Vy = 0
 # yi = 0
 # y = robo.get_delta_Ycm(Vy, yi)
-#
-# Vphi = 0.1
+
+# Vphi = 0
 # phi0 = 0
 # phi = robo.get_delta_Phicm(Vphi, phi0)
-#
+
 # # Plotando os resultados
 # plt.plot(robo.tempo, x, label='x(t)')
 # plt.plot(robo.tempo, y, label='y(t)')
@@ -144,4 +144,4 @@ class CM:
 # plt.ylabel('Posição/Ângulo')
 # plt.legend()
 # plt.title('Posição do Centro de Massa e Ângulo durante a Caminhada do Robô')
-#plt.show()
+# plt.show()

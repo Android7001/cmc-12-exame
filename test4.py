@@ -1,7 +1,6 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from cm import CM
 from foot import FootPose
 
@@ -11,7 +10,6 @@ Vy = 0
 Vphi = 0
 steps = 4
 T = 1
-
 
 # Função para simulação do caminhar do robô
 def WalkinRobot():
@@ -79,38 +77,40 @@ def WalkinRobot():
 
     return tempo, xcm, ycm, pe_esq_x, pe_esq_y, pe_esq_z, pe_dir_x, pe_dir_y, pe_dir_z
 
-
-# Função para atualizar a animação
-def update(step):
-    ax.clear()
-
-    # Plotar o Centro de Massa (CM)
-    ax.scatter(xcm[step], ycm[step], 1, c='r', marker='o', label='CM')
-
-    # Plotar os pés
-    ax.scatter(pe_esq_x[step], pe_esq_y[step], pe_esq_z[step], c='b', marker='o', label='Pé Esquerdo')
-    ax.scatter(pe_dir_x[step], pe_dir_y[step], pe_dir_z[step], c='g', marker='o', label='Pé Direito')
-
-    # Configurar os eixos
-    ax.set_xlim([-0.5, 5])
-    ax.set_ylim([-1, 1])
-    ax.set_zlim([0, 1])
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_zlabel('Z axis')
-    ax.set_title('Humanoid Robot Step Simulation')
-    ax.legend()
-
-
 # Simulação do caminhar do robô
 tempo, xcm, ycm, pe_esq_x, pe_esq_y, pe_esq_z, pe_dir_x, pe_dir_y, pe_dir_z = WalkinRobot()
 
-# Criar figura e eixos 3D
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+# Plotando as posições dos pés e do centro de massa (CM)
+fig, axs = plt.subplots(3, 1, figsize=(12, 12))
 
-# Criar animação
-ani = FuncAnimation(fig, update, frames=len(tempo), interval=50)
+# Plotando as posições do centro de massa (CM)
+axs[0].plot(tempo, xcm, label='x_cm')
+axs[0].plot(tempo, ycm, label='y_cm')
+axs[0].set_xlabel('Tempo (s)')
+axs[0].set_ylabel('Posição (cm)')
+axs[0].set_title('Posições do Centro de Massa (CM)')
+axs[0].legend()
+axs[0].grid(True)
 
-# Mostrar animação
+# Plotando as posições do pé esquerdo
+axs[1].plot(tempo, pe_esq_x, label='x_esq')
+axs[1].plot(tempo, pe_esq_y, label='y_esq')
+axs[1].plot(tempo, pe_esq_z, label='z_esq')
+axs[1].set_xlabel('Tempo (s)')
+axs[1].set_ylabel('Posição (cm)')
+axs[1].set_title('Posições do Pé Esquerdo')
+axs[1].legend()
+axs[1].grid(True)
+
+# Plotando as posições do pé direito
+axs[2].plot(tempo, pe_dir_x, label='x_dir')
+axs[2].plot(tempo, pe_dir_y, label='y_dir')
+axs[2].plot(tempo, pe_dir_z, label='z_dir')
+axs[2].set_xlabel('Tempo (s)')
+axs[2].set_ylabel('Posição (cm)')
+axs[2].set_title('Posições do Pé Direito')
+axs[2].legend()
+axs[2].grid(True)
+
+plt.tight_layout()
 plt.show()
