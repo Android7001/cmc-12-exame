@@ -92,7 +92,7 @@ def update(step):
     ax.scatter(pe_dir_x[step], pe_dir_y[step], pe_dir_z[step], c='g', marker='o', label='Pé Direito')
 
     # Configurar os eixos
-    ax.set_xlim([-0.5, 5])
+    ax.set_xlim([-2, 6])
     ax.set_ylim([-1, 1])
     ax.set_zlim([0, 1])
     ax.set_xlabel('X axis')

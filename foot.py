@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 class FootPose:
-    def __init__(self, T=1, t_b=0.4, t_e=0.6, t_inicio=0, t_fim=1, passo=0.01):
+    def __init__(self, T=1, t_b=0.1, t_e=0.9, t_inicio=0, t_fim=1, passo=0.01):
         self.t_inicio = t_inicio
         self.t_fim = t_fim
         self.passo = passo
@@ -51,13 +51,13 @@ class FootPose:
                 y_a.append(yi)
                 psi_a.append(psi0)
             elif self.phi_b <= phi < self.phi_e:
-                x_a.append(xi + 10 * Vx * (phi - self.phi_b))
-                y_a.append(yi + 10 * Vy * (phi - self.phi_b))
-                psi_a.append(psi0 + 10 * Vpsi * (phi - self.phi_b))
+                x_a.append(xi + 2.5 * Vx * (phi - self.phi_b))
+                y_a.append(yi + 2.5 * Vy * (phi - self.phi_b))
+                psi_a.append(psi0 + 2.5 * Vpsi * (phi - self.phi_b))
             else:
-                x_a.append(xi + 10 * Vx * (self.phi_e - self.phi_b))
-                y_a.append(yi + 10 * Vy * (self.phi_e - self.phi_b))
-                psi_a.append(psi0 + 10 * Vpsi * (self.phi_e - self.phi_b))
+                x_a.append(xi + 2.5 * Vx * (self.phi_e - self.phi_b))
+                y_a.append(yi + 2.5 * Vy * (self.phi_e - self.phi_b))
+                psi_a.append(psi0 + 2.5 * Vpsi * (self.phi_e - self.phi_b))
 
         return x_a, y_a, self.get_z(), psi_a
 
