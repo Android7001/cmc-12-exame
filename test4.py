@@ -30,8 +30,8 @@ def WalkinRobot():
     xcm = np.zeros(1)
     ycm = np.zeros(1)
 
-    pe_esq_pos = [0.0 - Vx*T, 0.1, 0.0]  # Posição inicial do pé esquerdo
-    pe_dir_pos = [0.0 + Vx*T, -0.1, 0.0]  # Posição inicial do pé direito
+    pe_esq_pos = [0.0 - Vx*T/2, 0.1, 0.0]  # Posição inicial do pé esquerdo
+    pe_dir_pos = [0.0 + Vx*T/2, -0.1, 0.0]  # Posição inicial do pé direito
 
     for i in range(steps):
         new_phi = cm.get_delta_Phicm(Vphi, phi[-1] if phi.any() else 0)
