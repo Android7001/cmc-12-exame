@@ -53,11 +53,11 @@ def WalkinRobot():
         if (Vy >= 0 and balanco_esquerda) or (Vy < 0 and not balanco_esquerda):
             # Está abrindo, então o passo é com o pé esquerdo
             pe_esq_x_temp, pe_esq_y_temp, pe_esq_z_temp, pe_esq_psi_temp = pe_esq.get_foot_position([Vx, Vy, Vphi], pe_esq_pos_inicial)
-            pe_esq_pos_inicial = [pe_esq_x_temp[-1], pe_esq_y_temp[-1], pe_esq_psi_temp[-1]]  # atualização da posição inicial do pé esquerdo
 
             pe_esq_delta_x = pe_esq_x_temp * np.cos(pe_esq_psi_temp) - pe_esq_y_temp * np.sin(pe_esq_psi_temp)
             pe_esq_delta_y = pe_esq_x_temp * np.sin(pe_esq_psi_temp) + pe_esq_y_temp * np.cos(pe_esq_psi_temp)
 
+            pe_esq_pos_inicial = [pe_esq_delta_x[-1], pe_esq_delta_y[-1], pe_esq_psi_temp[-1]]  # atualização da posição inicial do pé esquerdo
             pe_esq_x = np.concatenate((pe_esq_x, pe_esq_delta_x))
             pe_esq_y = np.concatenate((pe_esq_y, pe_esq_delta_y))
             pe_esq_z = np.concatenate((pe_esq_z, pe_esq_z_temp))
@@ -72,11 +72,11 @@ def WalkinRobot():
         else:
             # Está fechando, então o passo é com o pé direito
             pe_dir_x_temp, pe_dir_y_temp, pe_dir_z_temp, pe_dir_psi_temp = pe_dir.get_foot_position([Vx, Vy, Vphi], pe_dir_pos_inicial)
-            pe_dir_pos_inicial = [pe_dir_x_temp[-1], pe_dir_y_temp[-1], pe_dir_psi_temp[-1]]  # Atualização da posição inicial do pé direito 
 
             pe_dir_delta_x = pe_dir_x_temp * np.cos(pe_dir_psi_temp) - pe_dir_y_temp * np.sin(pe_dir_psi_temp)
             pe_dir_delta_y = pe_dir_x_temp * np.sin(pe_dir_psi_temp) + pe_dir_y_temp * np.cos(pe_dir_psi_temp)
 
+            pe_dir_pos_inicial = [pe_dir_delta_x[-1], pe_dir_delta_y[-1], pe_dir_psi_temp[-1]]  # Atualização da posição inicial do pé direito 
             pe_dir_x = np.concatenate((pe_dir_x, pe_dir_delta_x))
             pe_dir_y = np.concatenate((pe_dir_y, pe_dir_delta_y))
             pe_dir_z = np.concatenate((pe_dir_z, pe_dir_z_temp))
