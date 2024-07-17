@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 class FootPose:
-    def __init__(self, T=1, t_b=0.1, t_e=0.9, t_inicio=0, t_fim=1, passo=0.01):
+    def __init__(self, T=1, t_b=0.4, t_e=0.6, t_inicio=0, t_fim=1, passo=0.01):
         self.t_inicio = t_inicio
         self.t_fim = t_fim
         self.passo = passo

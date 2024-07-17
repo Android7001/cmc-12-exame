@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 class CM:
-    def __init__(self, h=0.5, L=0.25, g=9.81, T=1, tb=0.1, te=0.9, tempo_inicial=0, tempo_final=1, intervalo=0.01):
+    def __init__(self, h=0.5, L=0.25, g=9.81, T=1, tb=0.4, te=0.6, tempo_inicial=0, tempo_final=1, intervalo=0.01):
         self.h = h  # Altura do centro de massa
         self.L = L  # Largura do robô
         self.g = g  # Aceleração da gravidade
