@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 class CM:
-    def __init__(self, h=0.5, L=0.25, g=9.81, T=1, tb=0.4, te=0.6, tempo_inicial=0, tempo_final=1, intervalo=0.01):
+    def __init__(self, h=0.5, L=0.25, g=9.81, T=1, tb=0.1, te=0.9, tempo_inicial=0, tempo_final=1, intervalo=0.01):
         self.h = h  # Altura do centro de massa
         self.L = L  # Largura do robô
         self.g = g  # Aceleração da gravidade
@@ -56,10 +56,10 @@ class CM:
         return x
 
     def get_delta_Ycm(self, Vy, yi, abrindo=True):
-        if abrindo:
-            py0 = 0
-            pys = -np.sign(Vy) * self.L / 2
-            pyf = np.sign(Vy) * Vy * self.T
+        if abrindo: # Dependendo se as pernas estao abrindo ou fechando temos condicoes iniciais diferentes
+            py0 = 0 # Posicao inicial do ZPM/CM
+            pys = -np.sign(Vy) * self.L / 2 # Posicao do pe de suporte em relacao ao CM
+            pyf = np.sign(Vy) * Vy * self.T # Posicao final do ZPM/CM
         else:
             py0 = 0
             pys = np.sign(Vy) * (self.L / 2 + Vy * self.T)
@@ -105,7 +105,7 @@ class CM:
         return y
 
     def get_delta_Phicm(self, Vphi, phi0):
-        psi = self.tempo / self.T
+        psi = self.tempo / self.T # Tempo normalizado
         psib = self.tb / self.T
         psie = self.te / self.T
         phif = Vphi * self.T
@@ -115,7 +115,7 @@ class CM:
             if psi[i] <= psib:
                 phi[i] = phi0
             elif psib < psi[i] <= psie:
-                phi[i] = phif / 2 * (1 - math.cos(math.pi * (psi[i] - psib) / (psie - psib))) + phi0
+                phi[i] = phif / 2 * (1 - math.cos(math.pi * (psi[i] - psib) / (psie - psib))) + phi0 # Funcao de interpolacao para o angulo
             else:
                 phi[i] = phif + phi0
 

@@ -46,18 +46,18 @@ class FootPose:
 
         for tempo in self.vetor_tempo:
             phi = tempo % self.T
-            if phi < self.phi_b:
+            if phi <= self.phi_b:
                 x_a.append(xi)
                 y_a.append(yi)
                 psi_a.append(psi0)
-            elif self.phi_b <= phi < self.phi_e:
-                x_a.append(xi + 2.5 * Vx * (phi - self.phi_b))
-                y_a.append(yi + 2.5 * Vy * (phi - self.phi_b))
-                psi_a.append(psi0 + 2.5 * Vpsi * (phi - self.phi_b))
+            elif self.phi_b < phi <= self.phi_e:
+                x_a.append(xi + Vx * self.T * (1 - math.cos(math.pi * (phi - self.phi_b) / (self.phi_e - self.phi_b)))) # Funcao de interpolacao utilizada, mesma do angulo do CM
+                y_a.append(yi + 2.5 * Vy * self.T * (1 - math.cos(math.pi * (phi - self.phi_b) / (self.phi_e - self.phi_b))))
+                psi_a.append(psi0 + 2.5 * Vpsi * self.T * (1 - math.cos(math.pi * (phi - self.phi_b) / (self.phi_e - self.phi_b))))
             else:
-                x_a.append(xi + 2.5 * Vx * (self.phi_e - self.phi_b))
-                y_a.append(yi + 2.5 * Vy * (self.phi_e - self.phi_b))
-                psi_a.append(psi0 + 2.5 * Vpsi * (self.phi_e - self.phi_b))
+                x_a.append(xi + 2 * Vx * self.T)
+                y_a.append(yi + 2 * Vy * self.T)
+                psi_a.append(psi0 + 2 * Vpsi * self.T)
 
         return x_a, y_a, self.get_z(), psi_a
 
