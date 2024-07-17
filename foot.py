@@ -2,7 +2,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-class FootPose:
+class Foot:
     def __init__(self, T=1, t_b=0.4, t_e=0.6, tempo_inicial=0, tempo_final=1, intervalo=0.01):
         self.T = T              # Período do Passo
         self.t_b = t_b          # Tempo inicial de suporte simples
@@ -11,13 +11,13 @@ class FootPose:
         self.phi_e = t_e / T    # Normalização do tempo final de suporte simples
         self.vetor_tempo = np.arange(tempo_inicial, tempo_final, intervalo)
 
-    def v(self, phi):
+    def v(self, phi): # Função utilizada para interpolação da posição z do pé
         if phi < self.phi_b or phi >= self.phi_e:
             return 0
         else:
             return 0.5 * (1 - math.cos(2 * math.pi * (phi - self.phi_b) / (self.phi_e - self.phi_b)))
 
-    def get_z(self):
+    def get_z(self): # Função utilizada para o cálculo da coordenada z do pé
         z_a = []
         z_cm = 0
         z_step = 0.5
@@ -26,7 +26,7 @@ class FootPose:
             z_a.append(z_cm + z_step * self.v(phi))
         return z_a
 
-    def get_foot_position(self, v, initial_position):
+    def get_foot_position(self, v, initial_position): # Função que retorna a posição do pé: [x, y, z, psi] 
         Vx, Vy, Vpsi = v
         xi, yi, psi0 = initial_position
         x_a = np.zeros(len(self.vetor_tempo))
