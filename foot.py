@@ -17,24 +17,24 @@ class Foot:
         else:
             return 0.5 * (1 - math.cos(2 * math.pi * (phi - self.phi_b) / (self.phi_e - self.phi_b)))
 
-    def get_z(self): # Função utilizada para o cálculo da coordenada z do pé
-        z_a = []
-        z_cm = 0
-        z_step = 0.5
+    def get_z(self):  # Função utilizada para o cálculo da coordenada z do pé
+        z_a = []      # Lista contendo os valores da coordenada z do pé
+        z_cm = 0      # Posição inicial do pé
+        z_step = 0.5  # Altura do passo
         for tempo in self.vetor_tempo:
             phi = tempo % self.T  
             z_a.append(z_cm + z_step * self.v(phi))
         return z_a
 
     def get_foot_position(self, v, initial_position): # Função que retorna a posição do pé: [x, y, z, psi] 
-        Vx, Vy, Vpsi = v
-        xi, yi, psi0 = initial_position
+        Vx, Vy, Vpsi = v                    # v é o vetor de velocidades
+        xi, yi, psi0 = initial_position     # Posição inicial [xi, yi, psi0]
+
         x_a = np.zeros(len(self.vetor_tempo))
         y_a = np.zeros(len(self.vetor_tempo))
         psi_a = np.zeros(len(self.vetor_tempo))
 
         for i in range(len(self.vetor_tempo)):
-            
             phi = self.vetor_tempo[i] % self.T
             if phi <= self.phi_b:
                 x_a[i] = xi
